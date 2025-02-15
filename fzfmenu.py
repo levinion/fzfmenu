@@ -39,6 +39,8 @@ def run_plugins(output: str):
         killer_runner(output)
     elif output.startswith("wd "):
         window_jump_runner(output)
+    elif output.startswith("hs "):
+        history_runner(output)
     else:
         open_applicaton_runner(output)
 
@@ -59,6 +61,8 @@ def run_plugins_picker(input: str):
         window_jump_picker(input)
     elif input.startswith("kl "):
         killer_picker(input)
+    elif input.startswith("hs "):
+        history_picker(input)
     else:
         open_applicaton_picker(input)
 
@@ -87,7 +91,7 @@ def open_applicaton_picker(_):
 
 
 def killer_picker(input: str):
-    input = input.lstrip("kl ")
+    input = input.removeprefix("kl ")
     if len(input) == 0:
         return
     output = (
@@ -101,8 +105,19 @@ def killer_picker(input: str):
 
 
 def killer_runner(output: str):
-    pid = output.lstrip("kl ").split(" ")[0]
+    pid = output.removeprefix("kl ").split(" ")[0]
     subprocess.call(["bash", "-c", f"kill -9 {pid}"])
+
+
+def history_picker(input: str):
+    input = input.removeprefix("hs ")
+    output = subprocess.check_output(["fish", "-c", "history"]).decode().strip()
+    print("hs " + output)
+
+
+def history_runner(output: str):
+    cmd = output.removeprefix("hs ")
+    subprocess.call(["fish", "-c", f"nohup {cmd} > /dev/null 2>&1 &"])
 
 
 if __name__ == "__main__":
