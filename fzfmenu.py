@@ -111,7 +111,9 @@ def killer_runner(output: str):
 
 def history_picker(input: str):
     input = input.removeprefix("hs ")
-    output = subprocess.check_output(["fish", "-c", "history"]).decode().strip()
+    output = (
+        subprocess.check_output(["fish", "-c", f"history {input}"]).decode().strip()
+    )
     print("hs " + output)
 
 
