@@ -28,7 +28,7 @@ def call_fzf():
             -e fish -c \
             \"fzf \
             --bind 'start,change:reload:python {path} picker {{q}}' \
-            --bind 'enter:become(nohup python {path} run {{}} 2>&1 &)'\" \
+            --bind 'enter:become(nohup python {path} run {{}} > /dev/null 2>&1 &)'\" \
             ",
         ]
     )
