@@ -45,8 +45,8 @@ def run_plugins(output: str):
         open_applicaton_runner(output)
 
 
-def open_applicaton_runner(output):
-    desktop = "/usr/share/applications/" + output + ".desktop"
+def open_applicaton_runner(output: str):
+    desktop = output.split(" ")[-1]
     if os.path.exists(desktop):
         subprocess.call(["fish", "-c", f"dex {desktop}"])
 
@@ -81,13 +81,23 @@ def walk_tree(tree: i3ipc.Con):
 
 def open_applicaton_picker(_):
     output = (
-        subprocess.check_output(["bash", "-c", "ls /usr/share/applications"])
+        subprocess.check_output(
+            ["bash", "-c", "fd -a .desktop /usr/share/applications/"]
+        )
         .strip()
         .decode()
     )
-    lines = [s.removesuffix(".desktop") for s in output.splitlines()]
-    for line in lines:
-        print(line)
+    for line in output.splitlines():
+        name = get_name_by_path(line)
+        if name is not None:
+            print(name + " " + line)
+
+
+def get_name_by_path(path: str):
+    with open(path, "r") as f:
+        for line in f.readlines():
+            if line.startswith("Name="):
+                return line.removeprefix("Name=").strip()
 
 
 def killer_picker(input: str):
@@ -109,12 +119,10 @@ def killer_runner(output: str):
     subprocess.call(["bash", "-c", f"kill -9 {pid}"])
 
 
-def history_picker(input: str):
-    input = input.removeprefix("hs ")
-    output = (
-        subprocess.check_output(["fish", "-c", f"history {input}"]).decode().strip()
-    )
-    print("hs " + output)
+def history_picker(_):
+    output = subprocess.check_output(["fish", "-c", "history"]).strip().decode()
+    for line in output.splitlines():
+        print("hs " + line)
 
 
 def history_runner(output: str):
