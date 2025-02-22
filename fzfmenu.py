@@ -4,6 +4,8 @@ import sys
 import i3ipc
 
 i3 = i3ipc.Connection()
+shell = os.environ["SHELL"]
+terminal = "alacritty"
 
 
 def main():
@@ -21,11 +23,11 @@ def call_fzf():
     path = os.path.realpath(__file__)
     subprocess.call(
         [
-            "fish",
+            shell,
             "-c",
-            f"alacritty \
+            f"{terminal} \
             --class fzfmenu \
-            -e fish -c \
+            -e {shell} -c \
             \"fzf \
             --bind 'start,change:reload:python {path} picker {{q}}' \
             --bind 'enter:become(nohup python {path} run {{}} > /dev/null 2>&1 &)'\" \
@@ -42,13 +44,13 @@ def run_plugins(output: str):
     elif output.startswith("hs "):
         history_runner(output)
     else:
-        open_applicaton_runner(output)
+        open_application_runner(output)
 
 
-def open_applicaton_runner(output: str):
+def open_application_runner(output: str):
     desktop = output.split(" ")[-1]
     if os.path.exists(desktop):
-        subprocess.call(["fish", "-c", f"dex {desktop}"])
+        subprocess.call([shell, "-c", f"dex {desktop}"])
 
 
 def window_jump_runner(output: str):
@@ -64,7 +66,7 @@ def run_plugins_picker(input: str):
     elif input.startswith("hs "):
         history_picker(input)
     else:
-        open_applicaton_picker(input)
+        open_application_picker(input)
 
 
 def window_jump_picker(_):
@@ -79,11 +81,9 @@ def walk_tree(tree: i3ipc.Con):
         print("wd " + str(tree.window_title) + " " + str(tree.ipc_data["id"]))
 
 
-def open_applicaton_picker(_):
+def open_application_picker_by_path(path: str):
     output = (
-        subprocess.check_output(
-            ["bash", "-c", "fd -a .desktop /usr/share/applications/"]
-        )
+        subprocess.check_output([shell, "-c", f"fd -a .desktop {path}"])
         .strip()
         .decode()
     )
@@ -91,6 +91,11 @@ def open_applicaton_picker(_):
         name = get_name_by_path(line)
         if name is not None:
             print(name + " " + line)
+
+
+def open_application_picker(_):
+    open_application_picker_by_path("/usr/share/applications/")
+    open_application_picker_by_path(os.path.expanduser("~/Desktop/"))
 
 
 def get_name_by_path(path: str):
@@ -105,7 +110,7 @@ def killer_picker(input: str):
     if len(input) == 0:
         return
     output = (
-        subprocess.check_output(["bash", "-c", f"pgrep -fa {input}"]).strip().decode()
+        subprocess.check_output([shell, "-c", f"pgrep -fa {input}"]).strip().decode()
     )
     path = os.path.realpath(__file__)
     for line in output.splitlines():
@@ -116,18 +121,18 @@ def killer_picker(input: str):
 
 def killer_runner(output: str):
     pid = output.removeprefix("kl ").split(" ")[0]
-    subprocess.call(["bash", "-c", f"kill -9 {pid}"])
+    subprocess.call([shell, "-c", f"kill -9 {pid}"])
 
 
 def history_picker(_):
-    output = subprocess.check_output(["fish", "-c", "history"]).strip().decode()
+    output = subprocess.check_output([shell, "-i", "-c", "history"]).strip().decode()
     for line in output.splitlines():
         print("hs " + line)
 
 
 def history_runner(output: str):
     cmd = output.removeprefix("hs ")
-    subprocess.call(["fish", "-c", f"nohup {cmd} > /dev/null 2>&1 &"])
+    subprocess.call([shell, "-c", f"nohup {cmd} > /dev/null 2>&1 &"])
 
 
 if __name__ == "__main__":
