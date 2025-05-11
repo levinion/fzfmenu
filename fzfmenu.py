@@ -21,14 +21,18 @@ def main():
 
 def call_fzf():
     path = os.path.realpath(__file__)
+    cmd = [
+        terminal,
+        "--class",
+        "fzfmenu",
+        "-e",
+        "fzf",
+        f"--bind 'start,change:reload:python {path} picker {{q}}'",
+        f"--bind 'enter:execute(nohup python {path} run {{}} > /dev/null 2>&1 &)+abort'",
+    ]
+
     subprocess.call(
-        f"{terminal} \
-            --class fzfmenu \
-            -e {shell} -c \
-            \"fzf \
-            --bind 'start,change:reload:python {path} picker {{q}}' \
-            --bind 'enter:become(nohup python {path} run {{}} > /dev/null 2>&1 &)'\" \
-            ",
+        " ".join(cmd),
         shell=True,
     )
 
