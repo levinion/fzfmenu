@@ -1,33 +1,3 @@
-# fzfmenu
-
-fzfmenu is an application launcher inspired by [using_fzf_as_a_dmenurofi_replacement](https://www.reddit.com/r/commandline/comments/jatyek/using_fzf_as_a_dmenurofi_replacement/). It harnesses the power of fzf’s fuzzy search to offer a unified tool. It's written in rust and pluggable. 
-
-![](/assets/fzfmenu.png)
-
-## Dependencies
-
-- **terminal** (any terminal emulator supports `-e` flag to run command)
-- **fzf** (the core dependency)
-
-## Build
-
-To build, make sure `cargo` is in your path.
-
-```shell
-git clone https://github.com/levinion/fzfmenu
-cd fzfmenu
-cargo install --path .
-```
-
-## Configuration
-
-To keep dependencies minimal, `fzfmenu` does not ship with any default configurations or plugins. Therefore, it requires a custom setup before it can be used.
-
-`fzfmenu` is configured using a toml file, typically located at ~/.config/fzfmenu/config.toml. This file defines needed settings and a list of plugins.
-
-Here is a heavily commented example to help you get started:
-
-```toml
 #
 # Fzfmenu Configuration File
 #
@@ -45,9 +15,7 @@ terminal = "foot"
 
 # `arguments` (array of strings):
 # Provides additional arguments to be passed to the terminal emulator.
-# For example, the `-a` argument is often used to set the application's app_id.
-# Other terminal emulator, like `alacritty`, may prefer a `--class` flag to set the window's class.
-# Window properties like app_id or class, are useful in tiling window managers for changing a window's default layout and size.
+# For example, the `-a` argument is often used to set the application's name or class.
 arguments = ["-a", "fzfmenu"]
 
 
@@ -87,7 +55,6 @@ picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker {}"
 # The `{}` placeholder will be replaced by the complete line of text the user selected.
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner {}"
 
-# more plugins
 
 [[plugins]]
 name = "killer"
@@ -111,11 +78,3 @@ description = "Search and reuse past shell commands."
 prefix = "hs "
 picker = "python ~/.config/fzfmenu/plugins/history.py picker {}"
 runner = "python ~/.config/fzfmenu/plugins/history.py runner {}"
-```
-
-You can also find examples for plugins in the [](examples/plugins) directory.
-
-## More
-
-For more detailed implementation insights, you can refer to this blog post: [](https://blog.maruka.top/posts/Linux/fzfmenu%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/). The post explains the inside-implementation of the previous Python version.
-
