@@ -51,7 +51,10 @@ impl App {
             .into_iter()
             .map(|str| str.to_string()),
         );
-        Command::new(self.terminal).args(arguments).spawn()?;
+        Command::new(self.terminal)
+            .args(arguments)
+            .spawn()?
+            .wait()?;
         Ok(())
     }
 

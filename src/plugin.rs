@@ -33,7 +33,8 @@ impl Plugin {
         if let Some(arguments) = arguments.strip_prefix(&self.prefix) {
             Command::new("sh")
                 .args(["-c", &self.runner.replace("{}", arguments)])
-                .spawn()?;
+                .spawn()?
+                .wait()?;
         }
         Ok(())
     }
