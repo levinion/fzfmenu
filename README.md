@@ -113,9 +113,9 @@ picker = "python ~/.config/fzfmenu/plugins/history.py picker {}"
 runner = "python ~/.config/fzfmenu/plugins/history.py runner {}"
 ```
 
-You can also find examples for plugins in the [](examples/plugins) directory.
+You can also find examples for plugins in the [examples/plugins](examples/plugins) directory.
 
 ## More
 
-For more detailed implementation insights, you can refer to this blog post: [](https://blog.maruka.top/posts/Linux/fzfmenu%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/). The post explains the inside-implementation of the previous Python version.
+For more detailed implementation insights, you can refer to this blog post: [The Implementation Approach of fzfmenu](https://blog.maruka.top/posts/Linux/fzfmenu%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/). The post explains the inside-implementation of the previous Python version.
 
