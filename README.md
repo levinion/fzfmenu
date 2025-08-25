@@ -19,6 +19,12 @@ cd fzfmenu
 cargo install --path .
 ```
 
+There's also an AUR package for ArchLinux users:
+
+```
+$AUR_HELPER -S fzfmenu
+```
+
 ## Configuration
 
 To keep dependencies minimal, `fzfmenu` does not ship with any default configurations or plugins. Therefore, it requires a custom setup before it can be used.
