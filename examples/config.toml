@@ -1,66 +1,13 @@
-#
-# Fzfmenu Configuration File
-#
-# This file is used to define fzfmenu's main program settings and plugin list.
-#
-
-# --- Main Settings ---
-
-# `terminal` (string): 
-# Specifies the name or path of a terminal emulator. This program will be used
-# to launch the fzfmenu interface.
-# Examples: "foot", "kitty", "alacritty", "gnome-terminal", etc.
-# Ensure that the terminal supports the `-e` option to run a command.
 terminal = "foot"
-
-# `arguments` (array of strings):
-# Provides additional arguments to be passed to the terminal emulator.
-# For example, the `-a` argument is often used to set the application's name or class.
 arguments = ["-a", "fzfmenu"]
-
-# `fzf_arguments` (array of strings):
-# Provides arguments to be passed directly to the `fzf` command.
-# Use this field to customize `fzf`'s appearance and behavior, such as
-# its layout, border style, or colors.
-# For a full list of options, see the fzf man page or documentation.
-fzf_arguments = ["--border=rounded", "--layout=rounded"]
-
-# --- Plugin Configuration ---
-
-# `[[plugins]]` (table array):
-# This is a TOML table array used to define each plugin.
-# Each `[[plugins]]` block represents a separate fzfmenu plugin.
+fzf_arguments = ["--border=rounded"]
 
 [[plugins]]
-# `name` (string):
-# The name of the plugin, used for display in the fzfmenu interface.
-# It should be a short, easily recognizable name, like "app_launcher".
 name = "app_launcher"
-
-# `description` (optional string):
-# A brief description of the plugin, providing extra information about its purpose.
-# This can be displayed as help text in the fzfmenu interface.
 description = "Launch applications based on your desktop environment."
-
-# `prefix` (string):
-# The command prefix that triggers this plugin. Users type this prefix at the fzf prompt
-# to activate the plugin.
-# If the prefix is an empty string (""), this plugin is considered the default.
 prefix = ""
-
-# `picker` (string):
-# The command executed when the plugin is activated to generate a list of candidates.
-# Fzfmenu runs this command and uses its standard output as fzf's input.
-# The `{}` is a placeholder that will be replaced by the remaining text the user typed
-# at the fzf prompt.
 picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker {}"
-
-# `runner` (string):
-# The command executed when a user selects an item from the list.
-# Fzfmenu runs this command.
-# The `{}` placeholder will be replaced by the complete line of text the user selected.
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner {}"
-
 
 [[plugins]]
 name = "killer"
@@ -69,14 +16,12 @@ prefix = "kl "
 picker = "python ~/.config/fzfmenu/plugins/killer.py picker {}"
 runner = "python ~/.config/fzfmenu/plugins/killer.py runner {}"
 
-
 [[plugins]]
 name = "jumper"
-description = "Jump to frequently used windows (only works on Ura WM)."
+description = "Jump to any windows (only works on Ura WM)."
 prefix = "wd "
 picker = "python ~/.config/fzfmenu/plugins/jumper.py picker {}"
 runner = "python ~/.config/fzfmenu/plugins/jumper.py runner {}"
-
 
 [[plugins]]
 name = "history"

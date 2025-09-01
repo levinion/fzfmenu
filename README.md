@@ -56,6 +56,12 @@ terminal = "foot"
 # Window properties like app_id or class, are useful in tiling window managers for changing a window's default layout and size.
 arguments = ["-a", "fzfmenu"]
 
+# `fzf_arguments` (array of strings):
+# Provides arguments to be passed directly to the `fzf` command.
+# Use this field to customize `fzf`'s appearance and behavior, such as
+# its layout, border style, or colors.
+# For a full list of options, see the fzf man page or documentation.
+fzf_arguments = ["--border=rounded", "--layout=rounded"]
 
 # --- Plugin Configuration ---
 
@@ -90,7 +96,7 @@ picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker {}"
 # `runner` (string):
 # The command executed when a user selects an item from the list.
 # Fzfmenu runs this command.
-# The `{}` placeholder will be replaced by the complete line of text the user selected.
+# The `{}` placeholder will be replaced by the result the user selected.
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner {}"
 
 # more plugins
@@ -105,7 +111,7 @@ runner = "python ~/.config/fzfmenu/plugins/killer.py runner {}"
 
 [[plugins]]
 name = "jumper"
-description = "Jump to frequently used windows (only works on Ura WM)."
+description = "Jump to any windows (only works on Ura WM)."
 prefix = "wd "
 picker = "python ~/.config/fzfmenu/plugins/jumper.py picker {}"
 runner = "python ~/.config/fzfmenu/plugins/jumper.py runner {}"
@@ -118,6 +124,8 @@ prefix = "hs "
 picker = "python ~/.config/fzfmenu/plugins/history.py picker {}"
 runner = "python ~/.config/fzfmenu/plugins/history.py runner {}"
 ```
+
+A simpler version of configuration file can be found in [examples/config.toml](examples/config.toml).
 
 You can also find examples for plugins in the [examples/plugins](examples/plugins) directory.
 
