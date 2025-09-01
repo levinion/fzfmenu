@@ -10,6 +10,8 @@ use crate::app::App;
 struct Cli {
     #[arg(short, long)]
     list_plugins: bool,
+    #[arg(short, long)]
+    version: bool,
     #[clap(subcommand)]
     subcommand: Option<SubCommand>,
 }
@@ -25,6 +27,10 @@ enum SubCommand {
 fn main() -> Result<()> {
     let cli = Cli::parse();
     let app = App::new()?;
+    if cli.version {
+        println!("fzfmenu {}", env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
     if cli.list_plugins {
         for plugin in &app.plugins {
             println!("{}", plugin);
@@ -36,7 +42,6 @@ fn main() -> Result<()> {
             SubCommand::Picker { args } => app.run_picker(args.join(" ")),
             SubCommand::Runner { args } => app.run_runner(args.join(" ")),
         },
-
         None => app.run(),
     }
 }
