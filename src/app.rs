@@ -1,4 +1,4 @@
-use std::{fs::read_to_string, path::PathBuf, process::Command};
+use std::{fs::read_to_string, os::unix::process::CommandExt, path::PathBuf, process::Command};
 
 use anyhow::{Result, anyhow};
 
@@ -8,6 +8,7 @@ use crate::plugin::Plugin;
 pub struct App {
     pub terminal: String,
     pub arguments: Option<Vec<String>>,
+    pub fzf_arguments: Option<Vec<String>>,
     pub plugins: Vec<Plugin>,
 }
 
@@ -41,21 +42,19 @@ impl App {
 
     pub fn run(self) -> Result<()> {
         let mut arguments = self.arguments.unwrap_or_default();
-        arguments.extend(
-            [
-                "-e",
-                "sh",
-                "-c",
-                "fzf --bind 'start,change:reload:fzfmenu picker {q}' --bind 'enter:execute(setsid fzfmenu runner {} > /dev/null 2>&1)+abort'",
-            ]
-            .into_iter()
-            .map(|str| str.to_string()),
+        let fzf_arguments = self.fzf_arguments.unwrap_or_default().join(" ");
+        let exe = std::env::current_exe()?.to_string_lossy().to_string();
+        let fzf_cmd = format!(
+            "fzf {0} --bind 'start,change:reload:{1} picker {{q}}' --bind 'enter:execute(setsid {1} runner {{}} > /dev/null 2>&1)+abort'",
+            &fzf_arguments, &exe
         );
-        Command::new(self.terminal)
-            .args(arguments)
-            .spawn()?
-            .wait()?;
-        Ok(())
+        arguments.extend(
+            ["-e", "sh", "-c", &fzf_cmd]
+                .into_iter()
+                .map(|str| str.to_string()),
+        );
+        let err = Command::new(self.terminal).args(arguments).exec();
+        Err(anyhow!(err))
     }
 
     pub fn run_picker(self, arguments: String) -> Result<()> {

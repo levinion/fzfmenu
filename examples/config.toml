@@ -18,6 +18,12 @@ terminal = "foot"
 # For example, the `-a` argument is often used to set the application's name or class.
 arguments = ["-a", "fzfmenu"]
 
+# `fzf_arguments` (array of strings):
+# Provides arguments to be passed directly to the `fzf` command.
+# Use this field to customize `fzf`'s appearance and behavior, such as
+# its layout, border style, or colors.
+# For a full list of options, see the fzf man page or documentation.
+fzf_arguments = ["--border=rounded", "--layout=rounded"]
 
 # --- Plugin Configuration ---
 
