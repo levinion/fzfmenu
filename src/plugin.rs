@@ -1,6 +1,6 @@
-use std::{fmt, io::BufRead, os::unix::process::CommandExt, process::Command};
+use std::{fmt, io::BufRead, process::Command};
 
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use colored::Colorize;
 
 #[derive(serde::Deserialize)]
@@ -31,10 +31,10 @@ impl Plugin {
 
     pub fn run_runner(&self, arguments: &str) -> Result<()> {
         if let Some(arguments) = arguments.strip_prefix(&self.prefix) {
-            let err = Command::new("sh")
+            Command::new("sh")
                 .args(["-c", &self.runner.replace("{}", arguments)])
-                .exec();
-            return Err(anyhow!(err));
+                .spawn()?
+                .wait()?;
         }
         Ok(())
     }

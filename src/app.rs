@@ -1,4 +1,4 @@
-use std::{fs::read_to_string, os::unix::process::CommandExt, path::PathBuf, process::Command};
+use std::{fs::read_to_string, path::PathBuf, process::Command};
 
 use anyhow::{Result, anyhow};
 
@@ -53,8 +53,11 @@ impl App {
                 .into_iter()
                 .map(|str| str.to_string()),
         );
-        let err = Command::new(self.terminal).args(arguments).exec();
-        Err(anyhow!(err))
+        Command::new(self.terminal)
+            .args(arguments)
+            .spawn()?
+            .wait()?;
+        Ok(())
     }
 
     pub fn run_picker(self, arguments: String) -> Result<()> {
