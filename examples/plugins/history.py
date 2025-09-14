@@ -35,7 +35,7 @@ def history_runner(output: str):
 
 
 def main():
-    args = " ".join(sys.argv[2:])
+    args = sys.argv[2]
     match sys.argv[1]:
         case "picker":
             history_picker(args)

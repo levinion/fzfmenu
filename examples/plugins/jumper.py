@@ -36,7 +36,7 @@ def window_jump_runner(output: str):
 
 
 def main():
-    args = " ".join(sys.argv[2:])
+    args = sys.argv[2]
     match sys.argv[1]:
         case "picker":
             window_jump_picker()

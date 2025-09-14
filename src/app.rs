@@ -45,7 +45,7 @@ impl App {
         let fzf_arguments = self.fzf_arguments.unwrap_or_default().join(" ");
         let exe = std::env::current_exe()?.to_string_lossy().to_string();
         let fzf_cmd = format!(
-            "fzf {0} --bind 'start,change:reload:{1} picker {{q}}' --bind 'enter:execute(setsid {1} runner {{}} > /dev/null 2>&1)+abort'",
+            "fzf {0} --bind 'start,change:reload:{1} picker {{q}}' --bind 'enter:execute(setsid {1} runner {{}})+abort'",
             &fzf_arguments, &exe
         );
         arguments.extend(

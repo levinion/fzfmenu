@@ -6,26 +6,26 @@ fzf_arguments = ["--border=rounded"]
 name = "app_launcher"
 description = "Launch applications based on your desktop environment."
 prefix = ""
-picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner '{}'"
 
 [[plugins]]
 name = "killer"
 description = "Find and terminate running processes."
 prefix = "kl "
-picker = "python ~/.config/fzfmenu/plugins/killer.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/killer.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/killer.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/killer.py runner '{}'"
 
 [[plugins]]
 name = "jumper"
 description = "Jump to any windows (only works on Ura WM)."
 prefix = "wd "
-picker = "python ~/.config/fzfmenu/plugins/jumper.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/jumper.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/jumper.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/jumper.py runner '{}'"
 
 [[plugins]]
 name = "history"
 description = "Search and reuse past shell commands."
 prefix = "hs "
-picker = "python ~/.config/fzfmenu/plugins/history.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/history.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/history.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/history.py runner '{}'"

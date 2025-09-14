@@ -18,7 +18,7 @@ def killer_runner(output: str):
 
 
 def main():
-    args = " ".join(sys.argv[2:])
+    args = sys.argv[2]
     match sys.argv[1]:
         case "picker":
             killer_picker(args)

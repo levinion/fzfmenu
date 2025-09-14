@@ -18,7 +18,7 @@ def get_name_by_path(path: str):
                 return line.removeprefix("Name=").strip()
 
 
-def open_application_picker_by_path(path: str):
+def open_application_picker_by_path(path: str, d: set[str]):
     output = subprocess.check_output(
         f"fd -a .desktop {path}", shell=True, text=True
     ).strip()
@@ -27,13 +27,19 @@ def open_application_picker_by_path(path: str):
             continue
         name = get_name_by_path(path)
         if name is not None:
+            if name in d:
+                continue
             print(name + " " + path)
+            d.add(name)
 
 
 def open_application_picker():
-    open_application_picker_by_path("/usr/share/applications/")
-    open_application_picker_by_path(os.path.expanduser("~/.local/share/applications/"))
-    open_application_picker_by_path(os.path.expanduser("~/Desktop/"))
+    d: set[str] = set()
+    open_application_picker_by_path(os.path.expanduser("~/Desktop/"), d)
+    open_application_picker_by_path(
+        os.path.expanduser("~/.local/share/applications/"), d
+    )
+    open_application_picker_by_path("/usr/share/applications/", d)
 
 
 def open_application_runner(output: str):
@@ -47,7 +53,7 @@ def main():
         case "picker":
             open_application_picker()
         case "runner":
-            open_application_runner(" ".join(sys.argv[2:]))
+            open_application_runner(sys.argv[2])
 
 
 if __name__ == "__main__":
