@@ -91,13 +91,13 @@ prefix = ""
 # Fzfmenu runs this command and uses its standard output as fzf's input.
 # The `{}` is a placeholder that will be replaced by the remaining text the user typed
 # at the fzf prompt.
-picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker {}"
+picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker '{}'"
 
 # `runner` (string):
 # The command executed when a user selects an item from the list.
 # Fzfmenu runs this command.
 # The `{}` placeholder will be replaced by the result the user selected.
-runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner {}"
+runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner '{}'"
 
 # more plugins
 
@@ -105,24 +105,24 @@ runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner {}"
 name = "killer"
 description = "Find and terminate running processes."
 prefix = "kl "
-picker = "python ~/.config/fzfmenu/plugins/killer.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/killer.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/killer.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/killer.py runner '{}'"
 
 
 [[plugins]]
 name = "jumper"
 description = "Jump to any windows (only works on Ura WM)."
 prefix = "wd "
-picker = "python ~/.config/fzfmenu/plugins/jumper.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/jumper.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/jumper.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/jumper.py runner '{}'"
 
 
 [[plugins]]
 name = "history"
 description = "Search and reuse past shell commands."
 prefix = "hs "
-picker = "python ~/.config/fzfmenu/plugins/history.py picker {}"
-runner = "python ~/.config/fzfmenu/plugins/history.py runner {}"
+picker = "python ~/.config/fzfmenu/plugins/history.py picker '{}'"
+runner = "python ~/.config/fzfmenu/plugins/history.py runner '{}'"
 ```
 
 A simpler version of configuration file can be found in [examples/config.toml](examples/config.toml).
