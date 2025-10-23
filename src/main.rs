@@ -12,6 +12,8 @@ struct Cli {
     list_plugins: bool,
     #[arg(short, long)]
     version: bool,
+    #[arg(short, long)]
+    query: Option<String>,
     #[clap(subcommand)]
     subcommand: Option<SubCommand>,
 }
@@ -42,6 +44,6 @@ fn main() -> Result<()> {
             SubCommand::Picker { args } => app.run_picker(args.join(" ")),
             SubCommand::Runner { args } => app.run_runner(args.join(" ")),
         },
-        None => app.run(),
+        None => app.run(cli.query),
     }
 }
