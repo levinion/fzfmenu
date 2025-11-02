@@ -1,6 +1,7 @@
 use std::{fs::read_to_string, path::PathBuf, process::Command};
 
 use anyhow::{Result, anyhow};
+use shell_quote::{Bash, QuoteRefExt};
 
 use crate::plugin::Plugin;
 
@@ -42,10 +43,19 @@ impl App {
 
     pub fn run(self, query: Option<String>) -> Result<()> {
         let mut arguments = self.arguments.unwrap_or_default();
-        let fzf_arguments = self.fzf_arguments.unwrap_or_default().join(" ");
+        let fzf_arguments = self
+            .fzf_arguments
+            .unwrap_or_default()
+            .into_iter()
+            .map(|arg| arg.quoted(Bash))
+            .collect::<Vec<String>>()
+            .join(" ");
         let exe = std::env::current_exe()?.to_string_lossy().to_string();
         let query = match query {
-            Some(query) => "--query ".to_owned() + "'" + &query + "'",
+            Some(query) => {
+                let query: String = query.quoted(Bash);
+                "--query ".to_owned() + &query
+            }
             None => "".to_owned(),
         };
         let fzf_cmd = format!(
