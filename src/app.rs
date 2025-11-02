@@ -13,6 +13,13 @@ pub struct App {
     pub plugins: Vec<Plugin>,
 }
 
+pub struct AppOpt {
+    pub query: Option<String>,
+    pub terminal: Option<String>,
+    pub options: Option<String>,
+    pub fzf_options: Option<String>,
+}
+
 impl App {
     pub fn new() -> Result<Self> {
         let path = {
@@ -41,17 +48,25 @@ impl App {
         }
     }
 
-    pub fn run(self, query: Option<String>) -> Result<()> {
-        let mut arguments = self.arguments.unwrap_or_default();
-        let fzf_arguments = self
-            .fzf_arguments
-            .unwrap_or_default()
-            .into_iter()
-            .map(|arg| arg.quoted(Bash))
-            .collect::<Vec<String>>()
-            .join(" ");
+    pub fn run(self, opt: AppOpt) -> Result<()> {
+        let terminal = opt.terminal.unwrap_or(self.terminal);
+        let mut arguments = match opt.options {
+            Some(options) => options
+                .split_whitespace()
+                .map(|opt| opt.quoted(Bash))
+                .collect::<Vec<String>>(),
+            None => self.arguments.unwrap_or_default(),
+        };
+        let fzf_arguments = match opt.fzf_options {
+            Some(options) => options
+                .split_whitespace()
+                .map(|opt| opt.quoted(Bash))
+                .collect::<Vec<String>>(),
+            None => self.fzf_arguments.unwrap_or_default(),
+        }
+        .join(" ");
         let exe = std::env::current_exe()?.to_string_lossy().to_string();
-        let query = match query {
+        let query = match opt.query {
             Some(query) => {
                 let query: String = query.quoted(Bash);
                 "--query ".to_owned() + &query
@@ -67,10 +82,7 @@ impl App {
                 .into_iter()
                 .map(|str| str.to_string()),
         );
-        Command::new(self.terminal)
-            .args(arguments)
-            .spawn()?
-            .wait()?;
+        Command::new(terminal).args(arguments).spawn()?.wait()?;
         Ok(())
     }
 

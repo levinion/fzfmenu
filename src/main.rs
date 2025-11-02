@@ -4,7 +4,7 @@ mod plugin;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::app::App;
+use crate::app::{App, AppOpt};
 
 #[derive(Parser)]
 struct Cli {
@@ -14,6 +14,13 @@ struct Cli {
     version: bool,
     #[arg(short, long)]
     query: Option<String>,
+    #[arg(short, long)]
+    terminal: Option<String>,
+    #[arg(short)]
+    options: Option<String>,
+    #[arg(short)]
+    #[clap(short = 'O')]
+    fzf_options: Option<String>,
     #[clap(subcommand)]
     subcommand: Option<SubCommand>,
 }
@@ -44,6 +51,11 @@ fn main() -> Result<()> {
             SubCommand::Picker { args } => app.run_picker(args.join(" ")),
             SubCommand::Runner { args } => app.run_runner(args.join(" ")),
         },
-        None => app.run(cli.query),
+        None => app.run(AppOpt {
+            query: cli.query,
+            terminal: cli.terminal,
+            options: cli.options,
+            fzf_options: cli.fzf_options,
+        }),
     }
 }
