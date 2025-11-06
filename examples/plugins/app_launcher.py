@@ -45,7 +45,7 @@ def open_application_picker():
 def open_application_runner(output: str):
     desktop = output.split(" ")[-1]
     if os.path.exists(desktop):
-        subprocess.call(f"dex {desktop}", shell=True)
+        subprocess.call(["setsid", "dex", desktop])
 
 
 def main():
