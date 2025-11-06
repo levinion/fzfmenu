@@ -80,7 +80,7 @@ impl App {
             "start,change"
         };
         let fzf_cmd = format!(
-            "fzf {0} {1} --bind '{3}:reload:{2} picker {{q}}' --bind 'enter:execute({2} runner {{}})+accept'",
+            "fzf {0} {1} --bind '{3}:reload:{2} picker {{q}}' --bind 'enter:become({2} runner {{}})'",
             &fzf_arguments, query, &exe, action
         );
         arguments.extend(

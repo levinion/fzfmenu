@@ -31,7 +31,8 @@ def history_picker(input):
 
 
 def history_runner(output: str):
-    subprocess.call(f"setsid {output} > /dev/null 2>&1", shell=True)
+    subprocess.call(output, shell=True, start_new_session=True)
+    input()
 
 
 def main():
