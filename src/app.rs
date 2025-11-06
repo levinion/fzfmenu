@@ -1,6 +1,6 @@
-use std::{fs::read_to_string, path::PathBuf, process::Command};
+use std::{fs::read_to_string, os::unix::process::CommandExt, path::PathBuf, process::Command};
 
-use anyhow::{Result, anyhow};
+use anyhow::{Result, anyhow, bail};
 use shell_quote::{Bash, QuoteRefExt};
 
 use crate::plugin::Plugin;
@@ -18,6 +18,7 @@ pub struct AppOpt {
     pub terminal: Option<String>,
     pub options: Option<String>,
     pub fzf_options: Option<String>,
+    pub no_reload: bool,
 }
 
 impl App {
@@ -73,17 +74,22 @@ impl App {
             }
             None => "".to_owned(),
         };
+        let action = if opt.no_reload {
+            "start"
+        } else {
+            "start,change"
+        };
         let fzf_cmd = format!(
-            "fzf {0} {1} --bind 'start,change:reload:{2} picker {{q}}' --bind 'enter:execute(setsid {2} runner {{}})+abort'",
-            &fzf_arguments, query, &exe,
+            "fzf {0} {1} --bind '{3}:reload:{2} picker {{q}}' --bind 'enter:execute-silent(nohup {2} runner {{}} >/dev/null 2>&1)+accept'",
+            &fzf_arguments, query, &exe, action
         );
         arguments.extend(
             ["-e", "sh", "-c", &fzf_cmd]
                 .into_iter()
                 .map(|str| str.to_string()),
         );
-        Command::new(terminal).args(arguments).spawn()?.wait()?;
-        Ok(())
+        let err = Command::new(terminal).args(arguments).exec();
+        bail!(err);
     }
 
     pub fn run_picker(self, arguments: String) -> Result<()> {

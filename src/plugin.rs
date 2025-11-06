@@ -1,6 +1,11 @@
-use std::{fmt, io::BufRead, process::Command};
+use std::{
+    fmt,
+    io::{BufRead, BufReader},
+    os::unix::process::CommandExt,
+    process::Command,
+};
 
-use anyhow::Result;
+use anyhow::{Result, bail};
 use colored::Colorize;
 
 #[derive(serde::Deserialize)]
@@ -14,29 +19,31 @@ pub struct Plugin {
 
 impl Plugin {
     pub fn run_picker(&self, arguments: &str) -> Result<()> {
-        if let Some(arguments) = arguments.strip_prefix(&self.prefix) {
-            let output = Command::new("sh")
-                .args(["-c", &self.picker.replace("{}", arguments)])
-                .output()?;
-            if output.status.success() {
-                let lines = output.stdout.lines().collect::<Vec<_>>();
-                for line in lines {
-                    let line = line?;
-                    println!("{}{}", self.prefix, line);
-                }
-            }
+        let arguments = arguments
+            .strip_prefix(&self.prefix)
+            .expect("invalid arguments");
+        let mut child = Command::new("sh")
+            .args(["-c", &self.picker.replace("{}", arguments)])
+            .stdout(std::process::Stdio::piped())
+            .spawn()?;
+        let stdout = child.stdout.take().unwrap();
+        let reader = BufReader::new(stdout);
+        for line in reader.lines() {
+            let line = line?;
+            println!("{}{}", self.prefix, line);
         }
+        child.wait()?;
         Ok(())
     }
 
     pub fn run_runner(&self, arguments: &str) -> Result<()> {
-        if let Some(arguments) = arguments.strip_prefix(&self.prefix) {
-            Command::new("sh")
-                .args(["-c", &self.runner.replace("{}", arguments)])
-                .spawn()?
-                .wait()?;
-        }
-        Ok(())
+        let arguments = arguments
+            .strip_prefix(&self.prefix)
+            .expect("invalid arguments");
+        let err = Command::new("sh")
+            .args(["-c", &self.runner.replace("{}", arguments)])
+            .exec();
+        bail!(err);
     }
 }
 

@@ -18,6 +18,8 @@ struct Cli {
     terminal: Option<String>,
     #[arg(short)]
     options: Option<String>,
+    #[arg(long)]
+    no_reload: bool,
     #[arg(short)]
     #[clap(short = 'O')]
     fzf_options: Option<String>,
@@ -56,6 +58,7 @@ fn main() -> Result<()> {
             terminal: cli.terminal,
             options: cli.options,
             fzf_options: cli.fzf_options,
+            no_reload: cli.no_reload,
         }),
     }
 }
