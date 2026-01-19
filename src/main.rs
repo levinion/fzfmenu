@@ -29,9 +29,19 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum SubCommand {
-    #[clap(hide = true, trailing_var_arg = true, allow_hyphen_values = true)]
+    #[clap(
+        name = "_picker",
+        hide = true,
+        trailing_var_arg = true,
+        allow_hyphen_values = true
+    )]
     Picker { args: Vec<String> },
-    #[clap(hide = true, trailing_var_arg = true, allow_hyphen_values = true)]
+    #[clap(
+        name = "_runner",
+        hide = true,
+        trailing_var_arg = true,
+        allow_hyphen_values = true
+    )]
     Runner { args: Vec<String> },
 }
 
