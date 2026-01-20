@@ -59,11 +59,11 @@ impl Plugin {
     }
 
     pub fn on_enter(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
-        let arguments = query
-            .as_ref()
-            .strip_prefix(&self.prefix)
-            .expect("invalid arguments");
         if let Some(script) = self.on_enter_script.clone() {
+            let arguments = query
+                .as_ref()
+                .strip_prefix(&self.prefix)
+                .expect("invalid arguments");
             let mut child = Command::new("sh")
                 .env("FZFMENU_INPUT", arguments)
                 .args(["-c", &script.replace("{}", arguments)])
@@ -77,11 +77,11 @@ impl Plugin {
     }
 
     pub fn on_reload(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
-        let arguments = query
-            .as_ref()
-            .strip_prefix(&self.prefix)
-            .expect("invalid arguments");
         if let Some(script) = self.on_reload_script.clone() {
+            let arguments = query
+                .as_ref()
+                .strip_prefix(&self.prefix)
+                .expect("invalid arguments");
             let mut child = Command::new("sh")
                 .env("FZFMENU_INPUT", arguments)
                 .args(["-c", &script.replace("{}", arguments)])
@@ -95,11 +95,11 @@ impl Plugin {
     }
 
     pub fn on_leave(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
-        let arguments = query
-            .as_ref()
-            .strip_prefix(&self.prefix)
-            .expect("invalid arguments");
         if let Some(script) = self.on_leave_script.clone() {
+            let arguments = query
+                .as_ref()
+                .strip_prefix(&self.prefix)
+                .expect("invalid arguments");
             let mut child = Command::new("sh")
                 .env("FZFMENU_INPUT", arguments)
                 .args(["-c", &script.replace("{}", arguments)])

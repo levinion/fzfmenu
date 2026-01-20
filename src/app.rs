@@ -101,8 +101,8 @@ impl App {
                         actions.extend(last_plugin.on_leave(query)?);
                         actions.extend(plugin.on_enter(query)?);
                     }
-                    if plugin.name != last_plugin.name || plugin.dynamic.unwrap_or(false) {
-                        actions.extend(plugin.on_reload.clone());
+                    if plugin.dynamic.unwrap_or(false) || plugin.name != last_plugin.name {
+                        actions.extend(plugin.on_reload(query)?);
                         actions.push(change_border_label(format!(" {} ", plugin.name)));
                         actions.push(reload()?);
                     }
