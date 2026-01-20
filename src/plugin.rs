@@ -1,5 +1,5 @@
 use std::{
-    env, fmt,
+    fmt,
     io::{BufRead, BufReader},
     os::unix::process::CommandExt,
     process::Command,
@@ -7,8 +7,6 @@ use std::{
 
 use anyhow::{Result, bail};
 use colored::Colorize;
-
-use crate::api::{call_actions, change_border_label, reload};
 
 #[derive(serde::Deserialize, Clone)]
 pub struct Plugin {
@@ -19,7 +17,11 @@ pub struct Plugin {
     pub runner: String,
     pub dynamic: Option<bool>, // default to false
     #[serde(default)]
-    pub actions: Vec<String>,
+    pub on_enter: Vec<String>,
+    #[serde(default)]
+    pub on_reload: Vec<String>,
+    #[serde(default)]
+    pub on_leave: Vec<String>,
 }
 
 impl Plugin {
@@ -50,25 +52,6 @@ impl Plugin {
             .args(["-c", &self.runner.replace("{}", arguments)])
             .exec();
         bail!(err);
-    }
-
-    pub fn run_controller(&self, _query: impl AsRef<str>) -> Result<()> {
-        let border_label = env::var("FZF_BORDER_LABEL").unwrap();
-        let last_plugin_name = border_label.trim();
-        let mut actions = vec![reload()?, change_border_label(format!(" {} ", &self.name))];
-        let custom_actions = if !self.actions.is_empty() {
-            self.actions.clone()
-        } else {
-            ["hide-preview", "change-multi(0)"]
-                .into_iter()
-                .map(String::from)
-                .collect()
-        };
-        actions.extend(custom_actions);
-        if self.dynamic.unwrap_or(false) || last_plugin_name != self.name {
-            call_actions(actions);
-        }
-        Ok(())
     }
 }
 

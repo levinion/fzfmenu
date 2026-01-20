@@ -89,14 +89,20 @@ runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner '{}'"
 dynamic = false
 
 
-# `actions` (optional, defaults to `["hide-preview", "change-multi(0)"]`)
-# List of fzf actions to execute immediately after a plugin reload.
+# `hooks` (optional)
+# List of fzf actions to execute.
+# There are three hooks:
+#  - on_enter: Executed once when switching to the plugin.
+#  - on_leave: Executed once when switching away.
+#  - on_reload: Executed on every data refresh.
 # See the full list of available actions in the fzf manual:
 # https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1#L1834-L1976
-actions = [
+on_enter = [
 	"change-preview(echo {} | awk '{print $NF}' | xargs bat --color always)",
 	"show-preview",
 ]
+
+on_leave = ["hide-preview"]
 
 # more plugins
 

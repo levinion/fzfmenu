@@ -9,7 +9,10 @@ use std::{
 
 use anyhow::{Result, anyhow, bail};
 
-use crate::plugin::Plugin;
+use crate::{
+    api::{call_actions, change_border_label, reload},
+    plugin::Plugin,
+};
 
 #[derive(serde::Deserialize)]
 pub struct App {
@@ -91,15 +94,43 @@ impl App {
     pub fn run_controller(self) -> Result<()> {
         let query = &env::var("FZF_QUERY").unwrap();
         if let Some(plugin) = self.active_plugin(query) {
-            plugin.run_controller(query)?;
+            let mut actions = vec![];
+            match self.last_plugin() {
+                Some(last_plugin) => {
+                    if plugin.name != last_plugin.name {
+                        actions.extend(last_plugin.on_leave.clone());
+                        actions.extend(plugin.on_enter.clone());
+                    }
+                    if plugin.name != last_plugin.name || plugin.dynamic.unwrap_or(false) {
+                        actions.extend(plugin.on_reload.clone());
+                        actions.push(change_border_label(format!(" {} ", plugin.name)));
+                        actions.push(reload()?);
+                    }
+                }
+                None => {
+                    actions.extend(plugin.on_enter.clone());
+                    actions.extend(plugin.on_reload.clone());
+                    actions.push(change_border_label(format!(" {} ", plugin.name)));
+                    actions.push(reload()?);
+                }
+            }
+            if !actions.is_empty() {
+                call_actions(actions);
+            }
         }
         Ok(())
     }
 
-    fn active_plugin(self, query: impl AsRef<str>) -> Option<Plugin> {
+    fn active_plugin(&self, query: impl AsRef<str>) -> Option<&Plugin> {
         self.plugins
-            .into_iter()
+            .iter()
             .filter(|plugin| query.as_ref().starts_with(&plugin.prefix))
             .max_by_key(|plugin| plugin.prefix.len())
+    }
+
+    fn last_plugin(&self) -> Option<&Plugin> {
+        let border_label = env::var("FZF_BORDER_LABEL").unwrap();
+        let last_plugin_name = border_label.trim();
+        self.plugins.iter().find(|s| s.name == last_plugin_name)
     }
 }
