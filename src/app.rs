@@ -17,22 +17,26 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> Result<Self> {
+    pub fn new(config: Option<PathBuf>) -> Result<Self> {
         let path = {
-            let mut result = None;
-            if let Ok(xdg_config_home) = std::env::var("XDG_CONFIG_HOME") {
-                let path = PathBuf::from(xdg_config_home).join("fzfmenu/config.toml");
-                if path.is_file() {
-                    result = Some(path);
+            if let Some(result) = config {
+                Some(result)
+            } else {
+                let mut result = None;
+                if let Ok(xdg_config_home) = std::env::var("XDG_CONFIG_HOME") {
+                    let path = PathBuf::from(xdg_config_home).join("fzfmenu/config.toml");
+                    if path.is_file() {
+                        result = Some(path);
+                    }
                 }
-            }
-            if let Ok(home) = std::env::var("HOME") {
-                let path = PathBuf::from(home).join(".config/fzfmenu/config.toml");
-                if path.is_file() {
-                    result = Some(path);
+                if let Ok(home) = std::env::var("HOME") {
+                    let path = PathBuf::from(home).join(".config/fzfmenu/config.toml");
+                    if path.is_file() {
+                        result = Some(path);
+                    }
                 }
+                result
             }
-            result
         };
         match path {
             Some(path) => {

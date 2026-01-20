@@ -1,7 +1,3 @@
-terminal = "foot"
-arguments = ["-a", "fzfmenu"]
-fzf_arguments = ["--border=rounded"]
-
 [[plugins]]
 name = "app_launcher"
 description = "Launch applications based on your desktop environment."

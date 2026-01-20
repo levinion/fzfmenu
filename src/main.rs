@@ -2,6 +2,8 @@ mod api;
 mod app;
 mod plugin;
 
+use std::path::PathBuf;
+
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
@@ -13,6 +15,8 @@ struct Cli {
     list_plugins: bool,
     #[arg(short, long)]
     version: bool,
+    #[arg(short, long)]
+    config: Option<PathBuf>,
     #[clap(subcommand)]
     subcommand: Option<SubCommand>,
     #[arg(allow_hyphen_values = true, num_args = 0..)]
@@ -46,7 +50,7 @@ enum SubCommand {
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    let app = App::new()?;
+    let app = App::new(cli.config)?;
     if cli.version {
         println!("fzfmenu {}", env!("CARGO_PKG_VERSION"));
         return Ok(());

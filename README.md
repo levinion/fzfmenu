@@ -4,10 +4,24 @@ fzfmenu is an application launcher inspired by [using_fzf_as_a_dmenurofi_replace
 
 ![](/assets/fzfmenu.png)
 
+## Usage
+
+Directly in your current terminal:
+
+```shell
+fzfmenu
+```
+
+In a new terminal instance (using foot):
+
+```shell
+foot -e fzfmenu
+```
+
+
 ## Dependencies
 
-- **terminal** (any terminal emulator supports `-e` flag to run command)
-- **fzf** (the core dependency)
+- **fzf**
 
 ## Build
 
@@ -27,6 +41,8 @@ $AUR_HELPER -S fzfmenu
 
 ## Configuration
 
+**⚠️ WARNING: NO BATTERY INCLUDED**
+
 To keep dependencies minimal, `fzfmenu` does not ship with any default configurations or plugins. Therefore, it requires a custom setup before it can be used.
 
 `fzfmenu` is configured using a toml file, typically located at ~/.config/fzfmenu/config.toml. This file defines needed settings and a list of plugins.
@@ -34,41 +50,6 @@ To keep dependencies minimal, `fzfmenu` does not ship with any default configura
 Here is a heavily commented example to help you get started:
 
 ```toml
-#
-# Fzfmenu Configuration File
-#
-# This file is used to define fzfmenu's main program settings and plugin list.
-#
-
-# --- Main Settings ---
-
-# `terminal` (string): 
-# Specifies the name or path of a terminal emulator. This program will be used
-# to launch the fzfmenu interface.
-# Examples: "foot", "kitty", "alacritty", "gnome-terminal", etc.
-# Ensure that the terminal supports the `-e` option to run a command.
-terminal = "foot"
-
-# `arguments` (array of strings):
-# Provides additional arguments to be passed to the terminal emulator.
-# For example, the `-a` argument is often used to set the application's app_id.
-# Other terminal emulator, like `alacritty`, may prefer a `--class` flag to set the window's class.
-# Window properties like app_id or class, are useful in tiling window managers for changing a window's default layout and size.
-arguments = ["-a", "fzfmenu"]
-
-# `fzf_arguments` (array of strings):
-# Provides arguments to be passed directly to the `fzf` command.
-# Use this field to customize `fzf`'s appearance and behavior, such as
-# its layout, border style, or colors.
-# For a full list of options, see the fzf man page or documentation.
-fzf_arguments = ["--border=rounded", "--layout=rounded"]
-
-# --- Plugin Configuration ---
-
-# `[[plugins]]` (table array):
-# This is a TOML table array used to define each plugin.
-# Each `[[plugins]]` block represents a separate fzfmenu plugin.
-
 [[plugins]]
 # `name` (string):
 # The name of the plugin, used for display in the fzfmenu interface.
