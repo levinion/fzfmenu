@@ -91,13 +91,21 @@ prefix = ""
 # Fzfmenu runs this command and uses its standard output as fzf's input.
 # The `{}` is a placeholder that will be replaced by the remaining text the user typed
 # at the fzf prompt.
+# You could also get the input from `FZFMENU_INPUT` env.
 picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker '{}'"
 
 # `runner` (string):
 # The command executed when a user selects an item from the list.
 # Fzfmenu runs this command.
 # The `{}` placeholder will be replaced by the result the user selected.
+# You could also get the output from `FZFMENU_OUTPUT` env.
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner '{}'"
+
+# `dynamic` (optional bool)
+# If set to true, the picker script is re-executed on every keystroke, allowing 
+# for dynamic results. If false, the script runs only once when the plugin 
+# is activated, and fzf filters the initial results locally.
+dynamic = false
 
 # more plugins
 
@@ -128,8 +136,3 @@ runner = "python ~/.config/fzfmenu/plugins/history.py runner '{}'"
 A simpler version of configuration file can be found in [examples/config.toml](examples/config.toml).
 
 You can also find examples for plugins in the [examples/plugins](examples/plugins) directory.
-
-## More
-
-For more detailed implementation insights, you can refer to this blog post: [The Implementation Approach of fzfmenu](https://blog.levinion.de/posts/Linux/fzfmenu%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/). The post explains the inside-implementation of the previous Python version.
-

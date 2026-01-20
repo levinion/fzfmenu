@@ -1,10 +1,11 @@
+mod api;
 mod app;
 mod plugin;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use crate::app::{App, AppOpt};
+use crate::app::App;
 
 #[derive(Parser)]
 struct Cli {
@@ -12,19 +13,10 @@ struct Cli {
     list_plugins: bool,
     #[arg(short, long)]
     version: bool,
-    #[arg(short, long)]
-    query: Option<String>,
-    #[arg(short, long)]
-    terminal: Option<String>,
-    #[arg(short)]
-    options: Option<String>,
-    #[arg(long)]
-    no_reload: bool,
-    #[arg(short)]
-    #[clap(short = 'O')]
-    fzf_options: Option<String>,
     #[clap(subcommand)]
     subcommand: Option<SubCommand>,
+    #[arg(allow_hyphen_values = true, num_args = 0..)]
+    extra_args: Vec<String>,
 }
 
 #[derive(Subcommand)]
@@ -35,14 +27,21 @@ enum SubCommand {
         trailing_var_arg = true,
         allow_hyphen_values = true
     )]
-    Picker { args: Vec<String> },
+    Picker,
     #[clap(
         name = "_runner",
         hide = true,
         trailing_var_arg = true,
         allow_hyphen_values = true
     )]
-    Runner { args: Vec<String> },
+    Runner,
+    #[clap(
+        name = "_controller",
+        hide = true,
+        trailing_var_arg = true,
+        allow_hyphen_values = true
+    )]
+    Controller,
 }
 
 fn main() -> Result<()> {
@@ -60,15 +59,10 @@ fn main() -> Result<()> {
     }
     match cli.subcommand {
         Some(subcommand) => match subcommand {
-            SubCommand::Picker { args } => app.run_picker(args.join(" ")),
-            SubCommand::Runner { args } => app.run_runner(args.join(" ")),
+            SubCommand::Picker => app.run_picker(),
+            SubCommand::Runner => app.run_runner(),
+            SubCommand::Controller => app.run_controller(),
         },
-        None => app.run(AppOpt {
-            query: cli.query,
-            terminal: cli.terminal,
-            options: cli.options,
-            fzf_options: cli.fzf_options,
-            no_reload: cli.no_reload,
-        }),
+        None => app.run(cli.extra_args),
     }
 }

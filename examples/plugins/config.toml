@@ -15,7 +15,7 @@ description = "Find and terminate running processes."
 prefix = "kl "
 picker = "python ~/.config/fzfmenu/plugins/killer.py picker"
 runner = "python ~/.config/fzfmenu/plugins/killer.py runner"
-reload = true
+dynamic = true
 
 [[plugins]]
 name = "jumper"
@@ -30,7 +30,7 @@ description = "Search and reuse past shell commands."
 prefix = "hs "
 picker = "python ~/.config/fzfmenu/plugins/history.py picker"
 runner = "python ~/.config/fzfmenu/plugins/history.py runner"
-reload = true
+dynamic = true
 
 [[plugins]]
 name = "sink"

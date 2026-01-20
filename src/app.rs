@@ -1,24 +1,19 @@
-use std::{fs::read_to_string, os::unix::process::CommandExt, path::PathBuf, process::Command};
+use std::{
+    env,
+    fs::{File, read_to_string, remove_file},
+    io::{BufRead, BufReader},
+    os::unix::process::CommandExt,
+    path::PathBuf,
+    process::Command,
+};
 
 use anyhow::{Result, anyhow, bail};
-use shell_quote::{Bash, QuoteRefExt};
 
 use crate::plugin::Plugin;
 
 #[derive(serde::Deserialize)]
 pub struct App {
-    pub terminal: String,
-    pub arguments: Option<Vec<String>>,
-    pub fzf_arguments: Option<Vec<String>>,
     pub plugins: Vec<Plugin>,
-}
-
-pub struct AppOpt {
-    pub query: Option<String>,
-    pub terminal: Option<String>,
-    pub options: Option<String>,
-    pub fzf_options: Option<String>,
-    pub no_reload: bool,
 }
 
 impl App {
@@ -49,70 +44,57 @@ impl App {
         }
     }
 
-    pub fn run(self, opt: AppOpt) -> Result<()> {
-        let terminal = opt.terminal.unwrap_or(self.terminal);
-        let mut arguments = match opt.options {
-            Some(options) => options
-                .split_whitespace()
-                .map(|opt| opt.quoted(Bash))
-                .collect::<Vec<String>>(),
-            None => self.arguments.unwrap_or_default(),
-        };
-        let fzf_arguments = match opt.fzf_options {
-            Some(options) => options
-                .split_whitespace()
-                .map(|opt| opt.quoted(Bash))
-                .collect::<Vec<String>>(),
-            None => self.fzf_arguments.unwrap_or_default(),
-        }
-        .join(" ");
-        let exe = std::env::current_exe()?.to_string_lossy().to_string();
-        let query = match opt.query {
-            Some(query) => {
-                let query: String = query.quoted(Bash);
-                "--query ".to_owned() + &query
-            }
-            None => "".to_owned(),
-        };
-        let action = if opt.no_reload {
-            "start"
-        } else {
-            "start,change"
-        };
-        let fzf_cmd = format!(
-            "fzf {0} {1} --bind '{3}:reload:{2} _picker {{q}}' --bind 'enter:become({2} _runner {{}})'",
-            &fzf_arguments, query, &exe, action
+    pub fn run(self, mut args: Vec<String>) -> Result<()> {
+        let exe = std::env::current_exe()?.to_str().unwrap().to_owned();
+        args.extend(
+            [
+                "--bind",
+                &format!("start,change:transform({} _controller)", exe),
+                "--bind",
+                &format!("enter:become(FZF_SELECTED={{+f}} {} _runner)", exe),
+            ]
+            .map(|s| s.to_owned()),
         );
-        arguments.extend(
-            ["-e", "sh", "-c", &fzf_cmd]
-                .into_iter()
-                .map(|str| str.to_string()),
-        );
-        let err = Command::new(terminal).args(arguments).exec();
+        let err = Command::new("fzf").args(args).exec();
         bail!(err);
     }
 
-    pub fn run_picker(self, arguments: String) -> Result<()> {
-        let plugins = self
-            .plugins
-            .into_iter()
-            .filter(|plugin| arguments.starts_with(&plugin.prefix))
-            .max_by_key(|plugin| plugin.prefix.len());
-        if let Some(plugin) = plugins {
-            plugin.run_picker(&arguments)?;
+    pub fn run_picker(self) -> Result<()> {
+        let query = &env::var("FZF_QUERY").unwrap();
+        if let Some(plugin) = self.active_plugin(query) {
+            plugin.run_picker(query)?;
         }
         Ok(())
     }
 
-    pub fn run_runner(self, arguments: String) -> Result<()> {
-        let plugins = self
-            .plugins
-            .into_iter()
-            .filter(|plugin| arguments.starts_with(&plugin.prefix))
-            .max_by_key(|plugin| plugin.prefix.len());
-        if let Some(plugin) = plugins {
-            plugin.run_runner(&arguments)?;
+    pub fn run_runner(self) -> Result<()> {
+        let query = &env::var("FZF_QUERY").unwrap();
+        if let Some(plugin) = self.active_plugin(query) {
+            let tempfile = PathBuf::from(env::var("FZF_SELECTED").unwrap());
+            let file = File::open(&tempfile)?;
+            let reader = BufReader::new(file);
+            let selected_items = reader.lines().map_while(Result::ok);
+            for selected in selected_items {
+                plugin.run_runner(&selected)?;
+            }
+            // try cleaning the tempfile
+            let _ = remove_file(tempfile);
         }
         Ok(())
+    }
+
+    pub fn run_controller(self) -> Result<()> {
+        let query = &env::var("FZF_QUERY").unwrap();
+        if let Some(plugin) = self.active_plugin(query) {
+            plugin.run_controller(query)?;
+        }
+        Ok(())
+    }
+
+    fn active_plugin(self, query: impl AsRef<str>) -> Option<Plugin> {
+        self.plugins
+            .into_iter()
+            .filter(|plugin| query.as_ref().starts_with(&plugin.prefix))
+            .max_by_key(|plugin| plugin.prefix.len())
     }
 }

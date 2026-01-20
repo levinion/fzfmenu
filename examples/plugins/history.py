@@ -5,7 +5,7 @@ import sys
 shell = os.environ["SHELL"]
 
 
-def history_picker(input):
+def history_picker(input: str):
     atuin_init_cmd = ""
     if "zsh" in shell:
         atuin_init_cmd = 'eval "$(atuin init zsh)"'
@@ -36,12 +36,11 @@ def history_runner(output: str):
 
 
 def main():
-    args = sys.argv[2]
     match sys.argv[1]:
         case "picker":
-            history_picker(args)
+            history_picker(os.environ["FZFMENU_INPUT"])
         case "runner":
-            history_runner(args)
+            history_runner(os.environ["FZFMENU_OUTPUT"])
 
 
 if __name__ == "__main__":

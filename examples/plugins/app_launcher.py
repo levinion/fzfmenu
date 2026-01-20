@@ -53,7 +53,7 @@ def main():
         case "picker":
             open_application_picker()
         case "runner":
-            open_application_runner(sys.argv[2])
+            open_application_runner(os.environ["FZFMENU_OUTPUT"])
 
 
 if __name__ == "__main__":

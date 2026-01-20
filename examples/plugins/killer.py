@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -18,12 +19,11 @@ def killer_runner(output: str):
 
 
 def main():
-    args = sys.argv[2]
     match sys.argv[1]:
         case "picker":
-            killer_picker(args)
+            killer_picker(os.environ["FZFMENU_INPUT"])
         case "runner":
-            killer_runner(args)
+            killer_runner(os.environ["FZFMENU_OUTPUT"])
 
 
 if __name__ == "__main__":

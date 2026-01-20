@@ -6,16 +6,15 @@
 # ~/.zshrc.
 
 __fzfmenu() {
-  _arguments -s \
-    {-v,--version}'[Print version]' \
-    {-h,--help}'[Print help]' \
-    {-c,--config}'[Set configuraton file]:filename:_files' \
-    {-l,--list-plugins}'[List all plugins]' \
-    {-t,--terminal}'[Override terminal]' \
-    {-q,--query}'[Set query]' \
-    '-o[Override terminal arguments]' \
-    '-O[Override fzf arguments]' \
-    '--no-reload[Disable reloading while inputing]'
+	_arguments -s \
+		{-v,--version}'[Print version]' \
+		{-h,--help}'[Print help]' \
+		{-c,--config}'[Set configuraton file]:filename:_files' \
+		{-l,--list-plugins}'[List all plugins]' \
+		{-t,--terminal}'[Override terminal]' \
+		{-q,--query}'[Set query]' \
+		'-o[Override terminal arguments]' \
+		'-O[Override fzf arguments]'
 }
 
 __fzfmenu "$@"
