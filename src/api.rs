@@ -2,7 +2,13 @@ use anyhow::Result;
 use itertools::Itertools;
 
 pub fn call_actions(actions: impl IntoIterator<Item = String>) {
-    println!("{}", actions.into_iter().join("+"));
+    println!(
+        "{}",
+        actions
+            .into_iter()
+            .filter(|action| !action.is_empty())
+            .join("+")
+    );
 }
 
 pub fn reload() -> Result<String> {
