@@ -1,6 +1,6 @@
 # fzfmenu
 
-fzfmenu is an application launcher inspired by [using_fzf_as_a_dmenurofi_replacement](https://www.reddit.com/r/commandline/comments/jatyek/using_fzf_as_a_dmenurofi_replacement/). It harnesses the power of fzf’s fuzzy search to offer a unified tool. It's written in rust and pluggable. 
+fzfmenu is a task runner inspired by [using_fzf_as_a_dmenurofi_replacement](https://www.reddit.com/r/commandline/comments/jatyek/using_fzf_as_a_dmenurofi_replacement/). It harnesses the power of fzf’s fuzzy search to offer a unified tool. It's written in rust and pluggable. 
 
 ![](/assets/fzfmenu.png)
 
