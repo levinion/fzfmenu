@@ -95,6 +95,10 @@ dynamic = false
 #  - on_enter: Executed once when switching to the plugin.
 #  - on_leave: Executed once when switching away.
 #  - on_reload: Executed on every data refresh.
+# And three script version allowing dynamic control:
+#  - on_enter_script: Executed once when switching to the plugin.
+#  - on_leave_script: Executed once when switching away.
+#  - on_reload_script: Executed on every data refresh.
 # See the full list of available actions in the fzf manual:
 # https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1#L1834-L1976
 on_enter = [

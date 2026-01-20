@@ -7,6 +7,7 @@ use std::{
 
 use anyhow::{Result, bail};
 use colored::Colorize;
+use itertools::Itertools;
 
 #[derive(serde::Deserialize, Clone)]
 pub struct Plugin {
@@ -22,6 +23,9 @@ pub struct Plugin {
     pub on_reload: Vec<String>,
     #[serde(default)]
     pub on_leave: Vec<String>,
+    pub on_enter_script: Option<String>,
+    pub on_reload_script: Option<String>,
+    pub on_leave_script: Option<String>,
 }
 
 impl Plugin {
@@ -52,6 +56,60 @@ impl Plugin {
             .args(["-c", &self.runner.replace("{}", arguments)])
             .exec();
         bail!(err);
+    }
+
+    pub fn on_enter(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
+        let arguments = query
+            .as_ref()
+            .strip_prefix(&self.prefix)
+            .expect("invalid arguments");
+        if let Some(script) = self.on_enter_script.clone() {
+            let mut child = Command::new("sh")
+                .env("FZFMENU_INPUT", arguments)
+                .args(["-c", &script.replace("{}", arguments)])
+                .stdout(std::process::Stdio::piped())
+                .spawn()?;
+            let stdout = child.stdout.take().unwrap();
+            let reader = BufReader::new(stdout);
+            return Ok(reader.lines().map_while(Result::ok).collect_vec());
+        }
+        Ok(self.on_enter.clone())
+    }
+
+    pub fn on_reload(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
+        let arguments = query
+            .as_ref()
+            .strip_prefix(&self.prefix)
+            .expect("invalid arguments");
+        if let Some(script) = self.on_reload_script.clone() {
+            let mut child = Command::new("sh")
+                .env("FZFMENU_INPUT", arguments)
+                .args(["-c", &script.replace("{}", arguments)])
+                .stdout(std::process::Stdio::piped())
+                .spawn()?;
+            let stdout = child.stdout.take().unwrap();
+            let reader = BufReader::new(stdout);
+            return Ok(reader.lines().map_while(Result::ok).collect_vec());
+        }
+        Ok(self.on_reload.clone())
+    }
+
+    pub fn on_leave(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
+        let arguments = query
+            .as_ref()
+            .strip_prefix(&self.prefix)
+            .expect("invalid arguments");
+        if let Some(script) = self.on_leave_script.clone() {
+            let mut child = Command::new("sh")
+                .env("FZFMENU_INPUT", arguments)
+                .args(["-c", &script.replace("{}", arguments)])
+                .stdout(std::process::Stdio::piped())
+                .spawn()?;
+            let stdout = child.stdout.take().unwrap();
+            let reader = BufReader::new(stdout);
+            return Ok(reader.lines().map_while(Result::ok).collect_vec());
+        }
+        Ok(self.on_leave.clone())
     }
 }
 

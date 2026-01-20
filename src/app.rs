@@ -98,8 +98,8 @@ impl App {
             match self.last_plugin() {
                 Some(last_plugin) => {
                     if plugin.name != last_plugin.name {
-                        actions.extend(last_plugin.on_leave.clone());
-                        actions.extend(plugin.on_enter.clone());
+                        actions.extend(last_plugin.on_leave(query)?);
+                        actions.extend(plugin.on_enter(query)?);
                     }
                     if plugin.name != last_plugin.name || plugin.dynamic.unwrap_or(false) {
                         actions.extend(plugin.on_reload.clone());
@@ -108,8 +108,8 @@ impl App {
                     }
                 }
                 None => {
-                    actions.extend(plugin.on_enter.clone());
-                    actions.extend(plugin.on_reload.clone());
+                    actions.extend(plugin.on_enter(query)?);
+                    actions.extend(plugin.on_reload(query)?);
                     actions.push(change_border_label(format!(" {} ", plugin.name)));
                     actions.push(reload()?);
                 }
