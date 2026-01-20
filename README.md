@@ -82,11 +82,21 @@ picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker '{}'"
 # You could also get the output from `FZFMENU_OUTPUT` env.
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner '{}'"
 
-# `dynamic` (optional bool)
+# `dynamic` (optional bool, defaults to false)
 # If set to true, the picker script is re-executed on every keystroke, allowing 
 # for dynamic results. If false, the script runs only once when the plugin 
 # is activated, and fzf filters the initial results locally.
 dynamic = false
+
+
+# `actions` (optional, defaults to `["hide-preview", "change-multi(0)"]`)
+# List of fzf actions to execute immediately after a plugin reload.
+# See the full list of available actions in the fzf manual:
+# https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1#L1834-L1976
+actions = [
+	"change-preview(echo {} | awk '{print $NF}' | xargs bat --color always)",
+	"show-preview",
+]
 
 # more plugins
 

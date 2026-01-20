@@ -4,6 +4,10 @@ description = "Launch applications based on your desktop environment."
 prefix = ""
 picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker"
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner"
+actions = [
+	"change-preview(echo {} | awk '{print $NF}' | xargs bat --color always)",
+	"show-preview",
+]
 
 [[plugins]]
 name = "killer"

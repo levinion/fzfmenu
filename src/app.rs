@@ -13,6 +13,7 @@ use crate::plugin::Plugin;
 
 #[derive(serde::Deserialize)]
 pub struct App {
+    #[serde(default)]
     pub plugins: Vec<Plugin>,
 }
 

@@ -10,6 +10,6 @@ pub fn reload() -> Result<String> {
     Ok(format!("reload({} _picker)", exe))
 }
 
-pub fn change_border_label(label: impl AsRef<str>) -> Result<String> {
-    Ok(format!("change-border-label({})", label.as_ref()))
+pub fn change_border_label(label: impl AsRef<str>) -> String {
+    format!("change-border-label({})", label.as_ref())
 }

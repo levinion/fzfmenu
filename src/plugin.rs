@@ -17,7 +17,9 @@ pub struct Plugin {
     pub prefix: String,
     pub picker: String,
     pub runner: String,
-    pub dynamic: Option<bool>,
+    pub dynamic: Option<bool>, // default to false
+    #[serde(default)]
+    pub actions: Vec<String>,
 }
 
 impl Plugin {
@@ -53,8 +55,18 @@ impl Plugin {
     pub fn run_controller(&self, _query: impl AsRef<str>) -> Result<()> {
         let border_label = env::var("FZF_BORDER_LABEL").unwrap();
         let last_plugin_name = border_label.trim();
+        let mut actions = vec![reload()?, change_border_label(format!(" {} ", &self.name))];
+        let custom_actions = if !self.actions.is_empty() {
+            self.actions.clone()
+        } else {
+            ["hide-preview", "change-multi(0)"]
+                .into_iter()
+                .map(String::from)
+                .collect()
+        };
+        actions.extend(custom_actions);
         if self.dynamic.unwrap_or(false) || last_plugin_name != self.name {
-            call_actions([reload()?, change_border_label(format!(" {} ", &self.name))?]);
+            call_actions(actions);
         }
         Ok(())
     }
