@@ -5,8 +5,8 @@ prefix = ""
 picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker"
 runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner"
 on_enter = [
-	"change-preview(echo {} | awk '{print $NF}' | xargs bat --color always)",
-	"show-preview",
+  "change-preview(echo {} | awk '{print $NF}' | xargs bat --color always)",
+  "show-preview",
 ]
 on_leave = ["hide-preview"]
 
@@ -16,7 +16,7 @@ description = "Find and terminate running processes."
 prefix = "kl "
 picker = "python ~/.config/fzfmenu/plugins/killer.py picker"
 runner = "python ~/.config/fzfmenu/plugins/killer.py runner"
-reload = true
+dynamic = true
 
 [[plugins]]
 name = "jumper"
@@ -31,7 +31,7 @@ description = "Search and reuse past shell commands."
 prefix = "hs "
 picker = "python ~/.config/fzfmenu/plugins/history.py picker"
 runner = "python ~/.config/fzfmenu/plugins/history.py runner"
-reload = true
+dynamic = true
 
 [[plugins]]
 name = "sink"
