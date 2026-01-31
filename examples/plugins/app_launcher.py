@@ -45,7 +45,7 @@ def open_application_picker():
 def open_application_runner(output: str):
     desktop = output.split(" ")[-1]
     if os.path.exists(desktop):
-        subprocess.call(["dex", desktop], start_new_session=True)
+        subprocess.call(["dex", desktop])
 
 
 def main():

@@ -9,6 +9,7 @@ on_enter = [
   "show-preview",
 ]
 on_leave = ["hide-preview"]
+background = true
 
 [[plugins]]
 name = "killer"
@@ -17,6 +18,7 @@ prefix = "kl "
 picker = "python ~/.config/fzfmenu/plugins/killer.py picker"
 runner = "python ~/.config/fzfmenu/plugins/killer.py runner"
 dynamic = true
+background = true
 
 [[plugins]]
 name = "jumper"
@@ -24,6 +26,7 @@ description = "Jump to any windows (only works on Ura WM)."
 prefix = "wd "
 picker = "python ~/.config/fzfmenu/plugins/jumper.py picker"
 runner = "python ~/.config/fzfmenu/plugins/jumper.py runner"
+background = true
 
 [[plugins]]
 name = "history"
@@ -39,6 +42,7 @@ description = "Switch default pipewire sink."
 prefix = "sk "
 picker = "python ~/.config/fzfmenu/plugins/sink.py picker"
 runner = "python ~/.config/fzfmenu/plugins/sink.py runner"
+background = true
 
 [[plugins]]
 name = "mpris"
@@ -46,6 +50,7 @@ description = "control play/pause with playerctl."
 prefix = "mp "
 picker = "python ~/.config/fzfmenu/plugins/mpris.py picker"
 runner = "python ~/.config/fzfmenu/plugins/mpris.py runner"
+background = true
 
 [[plugins]]
 name = "sing-box"
@@ -53,3 +58,4 @@ description = "manage sing-box user service."
 prefix = "sb "
 picker = "python ~/.config/fzfmenu/plugins/sing-box.py picker"
 runner = "python ~/.config/fzfmenu/plugins/sing-box.py runner"
+background = true

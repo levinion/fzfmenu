@@ -88,6 +88,10 @@ runner = "python ~/.config/fzfmenu/plugins/app_launcher.py runner '{}'"
 # is activated, and fzf filters the initial results locally.
 dynamic = false
 
+# `background` (optional bool, defaults to false)
+# If set to true, the runner will be executed in a new session.
+# This may be useful if a background task is all you need.
+background = true
 
 # `hooks` (optional)
 # List of fzf actions to execute.
@@ -107,33 +111,8 @@ on_enter = [
 ]
 
 on_leave = ["hide-preview"]
-
-# more plugins
-
-[[plugins]]
-name = "killer"
-description = "Find and terminate running processes."
-prefix = "kl "
-picker = "python ~/.config/fzfmenu/plugins/killer.py picker '{}'"
-runner = "python ~/.config/fzfmenu/plugins/killer.py runner '{}'"
-
-
-[[plugins]]
-name = "jumper"
-description = "Jump to any windows (only works on Ura WM)."
-prefix = "wd "
-picker = "python ~/.config/fzfmenu/plugins/jumper.py picker '{}'"
-runner = "python ~/.config/fzfmenu/plugins/jumper.py runner '{}'"
-
-
-[[plugins]]
-name = "history"
-description = "Search and reuse past shell commands."
-prefix = "hs "
-picker = "python ~/.config/fzfmenu/plugins/history.py picker '{}'"
-runner = "python ~/.config/fzfmenu/plugins/history.py runner '{}'"
 ```
 
-A simpler version of configuration file can be found in [examples/config.toml](examples/config.toml).
+An example of configuration file can be found in [examples/config.toml](examples/config.toml).
 
 You can also find examples for plugins in the [examples/plugins](examples/plugins) directory.

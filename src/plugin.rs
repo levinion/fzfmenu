@@ -16,7 +16,8 @@ pub struct Plugin {
     pub prefix: String,
     pub picker: String,
     pub runner: String,
-    pub dynamic: Option<bool>, // default to false
+    pub dynamic: Option<bool>,    // default to false
+    pub background: Option<bool>, // default to false
     #[serde(default)]
     pub on_enter: Vec<String>,
     #[serde(default)]
@@ -51,10 +52,13 @@ impl Plugin {
 
     pub fn run_runner(&self, selected: impl AsRef<str>) -> Result<()> {
         let arguments = selected.as_ref().strip_prefix(&self.prefix).unwrap();
-        let err = Command::new("sh")
-            .env("FZFMENU_OUTPUT", arguments)
-            .args(["-c", &self.runner.replace("{}", arguments)])
-            .exec();
+        let mut cmd = Command::new("sh");
+        cmd.env("FZFMENU_OUTPUT", arguments)
+            .args(["-c", &self.runner.replace("{}", arguments)]);
+        if self.background.unwrap_or(false) {
+            cmd.process_group(0);
+        }
+        let err = cmd.exec();
         bail!(err);
     }
 
