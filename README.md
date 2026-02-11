@@ -113,6 +113,4 @@ on_enter = [
 on_leave = ["hide-preview"]
 ```
 
-An example of configuration file can be found in [examples/config.toml](examples/config.toml).
-
-You can also find examples for plugins in the [examples/plugins](examples/plugins) directory.
+An Example of configuration file and plugins can be found in [my dotfile repo](https://github.com/levinion/dotfiles/tree/main/user/fzfmenu/.config/fzfmenu).
