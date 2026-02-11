@@ -5,7 +5,7 @@ use std::{
     process::Command,
 };
 
-use anyhow::{Result, bail};
+use anyhow::Result;
 use colored::Colorize;
 use itertools::Itertools;
 
@@ -58,8 +58,8 @@ impl Plugin {
         if self.background.unwrap_or(false) {
             cmd.process_group(0);
         }
-        let err = cmd.exec();
-        bail!(err);
+        cmd.spawn()?.wait()?;
+        Ok(())
     }
 
     pub fn on_enter(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
