@@ -1,6 +1,6 @@
 # fzfmenu
 
-fzfmenu is a task runner inspired by [using_fzf_as_a_dmenurofi_replacement](https://www.reddit.com/r/commandline/comments/jatyek/using_fzf_as_a_dmenurofi_replacement/). It harnesses the power of fzf’s fuzzy search to offer a unified tool. It's written in rust and pluggable. 
+fzfmenu is a task runner inspired by [using_fzf_as_a_dmenurofi_replacement](https://www.reddit.com/r/commandline/comments/jatyek/using_fzf_as_a_dmenurofi_replacement/). It harnesses the power of fzf’s fuzzy search to offer a unified tool. It's written in rust and extensible. 
 
 ![](/assets/fzfmenu.png)
 
@@ -25,12 +25,12 @@ foot -e fzfmenu
 
 ## Build
 
-To build, make sure `cargo` is in your path.
+To build, make sure you have `cargo` downloaded.
 
 ```shell
 git clone https://github.com/levinion/fzfmenu
 cd fzfmenu
-cargo install --path .
+make
 ```
 
 There's also an AUR package for ArchLinux users:
