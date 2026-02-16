@@ -11,4 +11,4 @@ build: $(fzfmenu_target_file)
 $(fzfmenu_target_file): $(fzfmenu_source_code)
 	cargo build --release
 
-.PHONY: install
+.PHONY: install build
