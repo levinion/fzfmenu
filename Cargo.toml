@@ -10,4 +10,4 @@ colored = "3.1.1"
 itertools = "0.14.0"
 serde = { version = "1.0.228", features = ["derive"] }
 toml = "1.0.3"
-vipera = { version = "0.2.2", features = ["toml"], default-features = false }
+vipera = { version = "0.2.3", features = ["toml"], default-features = false }

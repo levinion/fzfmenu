@@ -31,17 +31,19 @@ impl vipera::Configuration for App {
                     path.file_name()
                         .and_then(|n| n.to_str())
                         .context(format!("Invalid config path: {:?}", path))?,
-                )
+                )?
                 .add_config_path(
                     path.parent()
-                        .context(format!("Invalid config path: {:?}", path))?,
-                );
+                        .context(format!("Invalid config path: {:?}", path))?
+                        .to_str()
+                        .unwrap(),
+                )?;
             Ok(vipera)
         } else {
             let vipera = vipera
-                .set_config_name("config.toml")
-                .add_config_path("$HOME/.config/fzfmenu")
-                .add_config_path("/etc/fzfmenu");
+                .set_config_name("config.toml")?
+                .add_config_path("$HOME/.config/fzfmenu")?
+                .add_config_path("/etc/fzfmenu")?;
             Ok(vipera)
         }
     }
