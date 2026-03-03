@@ -1,13 +1,14 @@
 use std::{
     env,
-    fs::{File, read_to_string, remove_file},
+    fs::{File, remove_file},
     io::{BufRead, BufReader},
     os::unix::process::CommandExt,
     path::PathBuf,
     process::Command,
 };
 
-use anyhow::{Result, anyhow, bail};
+use anyhow::{Context, Result, bail};
+use vipera::Configuration;
 
 use crate::{
     api::{call_actions, change_border_label, reload},
@@ -20,36 +21,40 @@ pub struct App {
     pub plugins: Vec<Plugin>,
 }
 
+impl vipera::Configuration for App {
+    fn vipera() -> Result<vipera::Vipera> {
+        let vipera = vipera::Vipera::new();
+        if let Ok(path) = std::env::var("FZFMENU_CONFIG_PATH") {
+            let path = PathBuf::from(path);
+            let vipera = vipera
+                .set_config_name(
+                    path.file_name()
+                        .and_then(|n| n.to_str())
+                        .context(format!("Invalid config path: {:?}", path))?,
+                )
+                .add_config_path(
+                    path.parent()
+                        .context(format!("Invalid config path: {:?}", path))?,
+                );
+            Ok(vipera)
+        } else {
+            let vipera = vipera
+                .set_config_name("config.toml")
+                .add_config_path("$HOME/.config/fzfmenu")
+                .add_config_path("/etc/fzfmenu");
+            Ok(vipera)
+        }
+    }
+}
+
 impl App {
     pub fn new(config: Option<PathBuf>) -> Result<Self> {
-        let path = {
-            if let Some(result) = config {
-                Some(result)
-            } else {
-                let mut result = None;
-                if let Ok(xdg_config_home) = std::env::var("XDG_CONFIG_HOME") {
-                    let path = PathBuf::from(xdg_config_home).join("fzfmenu/config.toml");
-                    if path.is_file() {
-                        result = Some(path);
-                    }
-                }
-                if let Ok(home) = std::env::var("HOME") {
-                    let path = PathBuf::from(home).join(".config/fzfmenu/config.toml");
-                    if path.is_file() {
-                        result = Some(path);
-                    }
-                }
-                result
+        if let Some(path) = config {
+            unsafe {
+                std::env::set_var("FZFMENU_CONFIG_PATH", path.to_str().unwrap());
             }
-        };
-        match path {
-            Some(path) => {
-                let content = read_to_string(path)?;
-                let app: App = toml::from_str(&content)?;
-                Ok(app)
-            }
-            None => Err(anyhow!("Config file not found")),
         }
+        Self::read_in_config()
     }
 
     pub fn run(self, mut args: Vec<String>) -> Result<()> {
