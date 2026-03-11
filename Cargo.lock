@@ -172,7 +172,6 @@ dependencies = [
  "colored",
  "itertools",
  "serde",
- "toml",
  "vipera",
 ]
 
@@ -441,9 +440,9 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "vipera"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea8fcd754622202dfac78aa83078a4e04ab7b953d16079f7cc3d0adc280c34dd"
+checksum = "e65ca5c244d878a505777dccac1ebe8d6de167d971673d8fd6fbc793500b0968"
 dependencies = [
  "anyhow",
  "serde",
