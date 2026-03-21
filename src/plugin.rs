@@ -27,6 +27,9 @@ pub struct Plugin {
     pub on_enter_script: Option<String>,
     pub on_reload_script: Option<String>,
     pub on_leave_script: Option<String>,
+    // helper
+    pub preview: Option<String>,
+    pub multiple: Option<bool>,
 }
 
 impl Plugin {
@@ -63,7 +66,7 @@ impl Plugin {
     }
 
     pub fn on_enter(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
-        if let Some(script) = self.on_enter_script.clone() {
+        let mut on_enter = if let Some(script) = self.on_enter_script.clone() {
             let arguments = query
                 .as_ref()
                 .strip_prefix(&self.prefix)
@@ -75,13 +78,24 @@ impl Plugin {
                 .spawn()?;
             let stdout = child.stdout.take().unwrap();
             let reader = BufReader::new(stdout);
-            return Ok(reader.lines().map_while(Result::ok).collect_vec());
+            reader.lines().map_while(Result::ok).collect_vec()
+        } else {
+            vec![]
+        };
+        on_enter.extend(self.on_enter.clone());
+        // helper
+        if let Some(preview) = self.preview.clone() {
+            on_enter.push(format!("change-preview({})", preview));
+            on_enter.push("show-preview".to_owned());
         }
-        Ok(self.on_enter.clone())
+        if self.multiple.unwrap_or(false) {
+            on_enter.push("change-multi".to_owned());
+        }
+        Ok(on_enter)
     }
 
     pub fn on_reload(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
-        if let Some(script) = self.on_reload_script.clone() {
+        let mut on_reload = if let Some(script) = self.on_reload_script.clone() {
             let arguments = query
                 .as_ref()
                 .strip_prefix(&self.prefix)
@@ -93,13 +107,16 @@ impl Plugin {
                 .spawn()?;
             let stdout = child.stdout.take().unwrap();
             let reader = BufReader::new(stdout);
-            return Ok(reader.lines().map_while(Result::ok).collect_vec());
-        }
-        Ok(self.on_reload.clone())
+            reader.lines().map_while(Result::ok).collect_vec()
+        } else {
+            vec![]
+        };
+        on_reload.extend(self.on_reload.clone());
+        Ok(on_reload)
     }
 
     pub fn on_leave(&self, query: impl AsRef<str>) -> Result<Vec<String>> {
-        if let Some(script) = self.on_leave_script.clone() {
+        let mut on_leave = if let Some(script) = self.on_leave_script.clone() {
             let arguments = query
                 .as_ref()
                 .strip_prefix(&self.prefix)
@@ -111,9 +128,19 @@ impl Plugin {
                 .spawn()?;
             let stdout = child.stdout.take().unwrap();
             let reader = BufReader::new(stdout);
-            return Ok(reader.lines().map_while(Result::ok).collect_vec());
+            reader.lines().map_while(Result::ok).collect_vec()
+        } else {
+            vec![]
+        };
+        on_leave.extend(self.on_leave.clone());
+        // helper
+        if self.preview.is_some() {
+            on_leave.push("hide-preview".to_owned());
         }
-        Ok(self.on_leave.clone())
+        if self.multiple.unwrap_or(false) {
+            on_leave.push("change-multi(0)".to_owned());
+        }
+        Ok(on_leave)
     }
 }
 
