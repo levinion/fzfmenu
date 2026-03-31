@@ -85,6 +85,9 @@ impl App {
     pub fn run_runner(self) -> Result<()> {
         let query = &env::var("FZF_QUERY").unwrap();
         if let Some(plugin) = self.active_plugin(query) {
+            if plugin.runner.is_none() {
+                return Ok(());
+            }
             let tempfile = PathBuf::from(env::var("FZF_SELECTED").unwrap());
             let file = File::open(&tempfile)?;
             let reader = BufReader::new(file);

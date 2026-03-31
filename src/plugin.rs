@@ -15,7 +15,7 @@ pub struct Plugin {
     pub description: Option<String>,
     pub prefix: String,
     pub picker: String,
-    pub runner: String,
+    pub runner: Option<String>,
     pub dynamic: Option<bool>,    // default to false
     pub background: Option<bool>, // default to false
     #[serde(default)]
@@ -56,8 +56,10 @@ impl Plugin {
     pub fn run_runner(&self, selected: impl AsRef<str>) -> Result<()> {
         let arguments = selected.as_ref().strip_prefix(&self.prefix).unwrap();
         let mut cmd = Command::new("sh");
-        cmd.env("FZFMENU_OUTPUT", arguments)
-            .args(["-c", &self.runner.replace("{}", arguments)]);
+        cmd.env("FZFMENU_OUTPUT", arguments).args([
+            "-c",
+            &self.runner.as_ref().unwrap().replace("{}", arguments),
+        ]);
         if self.background.unwrap_or(false) {
             cmd.process_group(0);
         }

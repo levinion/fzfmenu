@@ -50,11 +50,11 @@ enum SubCommand {
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    let app = App::new(cli.config)?;
     if cli.version {
         println!("fzfmenu {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
+    let app = App::new(cli.config)?;
     if cli.list_plugins {
         for plugin in &app.plugins {
             println!("{}", plugin);

@@ -75,7 +75,7 @@ prefix = ""
 # You could also get the input from `FZFMENU_INPUT` env.
 picker = "python ~/.config/fzfmenu/plugins/app_launcher.py picker '{}'"
 
-# `runner` (string):
+# `runner` (optional string):
 # The command executed when a user selects an item from the list.
 # Fzfmenu runs this command.
 # The `{}` placeholder will be replaced by the result the user selected.
