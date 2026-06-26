@@ -99,7 +99,7 @@ background = true
 #  - on_enter: Executed once when switching to the plugin.
 #  - on_leave: Executed once when switching away.
 #  - on_reload: Executed on every data refresh.
-# And three script version allowing dynamic control:
+# And three script version (a shell script prints fzf commands in lines) allowing dynamic control:
 #  - on_enter_script: Executed once when switching to the plugin.
 #  - on_leave_script: Executed once when switching away.
 #  - on_reload_script: Executed on every data refresh.
@@ -113,4 +113,4 @@ on_enter = [
 on_leave = ["hide-preview"]
 ```
 
-An Example of configuration file and plugins can be found in [my dotfile repo](https://github.com/levinion/dotfiles/tree/main/user/fzfmenu/.config/fzfmenu).
+An Example of configuration file and plugins can be found in [my dotfile repo](https://github.com/levinion/dotfiles/blob/main/linux/user/fzfmenu/.config/fzfmenu/config.toml).
